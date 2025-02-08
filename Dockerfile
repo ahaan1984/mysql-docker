@@ -5,10 +5,13 @@ FROM mysql:8.0
 ENV MYSQL_ROOT_PASSWORD=ahaan
 ENV MYSQL_DATABASE=database_trial
 
-# Copy initialization scripts to the MySQL init directory
-COPY ./init-scripts/*.sql /docker-entrypoint-initdb.d/
+# Copy the SQL file to the initialization directory
+COPY db.sql /docker-entrypoint-initdb.d/
 
-CMD ["mysqld", "--bind-address=0.0.0.0"]
+# Optional: Copy a custom entrypoint script if needed
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Expose the MySQL port
-EXPOSE 3306
+# Use the default entrypoint or a custom one if specified
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["mysqld"]
